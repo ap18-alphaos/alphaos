@@ -4,24 +4,37 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../../../lib/supabase'
 
 export default function Cliente({ params }) {
-  const { id } = params
   const [cliente, setCliente] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   async function carregarCliente() {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('clients')
       .select('*')
-      .eq('id', id)
-      .single()
+      .eq('id', params.id)
+      .maybeSingle()
+
+    if (error) {
+      console.error(error)
+    }
 
     setCliente(data)
+    setLoading(false)
   }
 
   useEffect(() => {
-    carregarCliente()
-  }, [])
+    if (params?.id) {
+      carregarCliente()
+    }
+  }, [params])
 
-  if (!cliente) return <p className="text-white p-6">Carregando...</p>
+  if (loading) {
+    return <p className="text-white p-6">Carregando...</p>
+  }
+
+  if (!cliente) {
+    return <p className="text-red-400 p-6">Cliente não encontrado.</p>
+  }
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white p-6">
