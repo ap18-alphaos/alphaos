@@ -10,7 +10,7 @@ export default function Clientes() {
     const { data } = await supabase
       .from('clients')
       .select('*')
-      .order('name')
+      .order('created_at', { ascending: false })
 
     setClientes(data || [])
   }
@@ -28,15 +28,14 @@ export default function Clientes() {
         <div className="space-y-3">
 
           {clientes.map((c) => (
-            <div
+            <a
               key={c.id}
-              className="bg-zinc-900 border border-zinc-800 p-4 rounded"
+              href={`/clientes/${c.id}`}
+              className="block bg-zinc-900 border border-zinc-800 p-4 rounded hover:bg-zinc-800 transition"
             >
-
               <p className="font-semibold">{c.name}</p>
               <p className="text-sm text-zinc-400">{c.phone}</p>
-
-            </div>
+            </a>
           ))}
 
         </div>
