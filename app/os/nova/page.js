@@ -25,12 +25,13 @@ export default function NovaOS() {
       reported_issue: defeito,
       price: Number(valor),
       technician: tecnico,
-      status: 'Recebido'
+      status: 'Recebido',
+      entry_date: new Date().toISOString()
     }])
 
     if (error) {
-      console.error(error)
       alert(error.message)
+      console.log(error)
       return
     }
 
@@ -74,7 +75,7 @@ export default function NovaOS() {
       />
 
       <input
-        placeholder="Técnico"
+        placeholder="Técnico responsável"
         value={tecnico}
         onChange={e => setTecnico(e.target.value)}
         className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
