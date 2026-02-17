@@ -1,4 +1,11 @@
-'use client'
+export default function Dashboard() {
+  return (
+    <div style={{ padding: 40 }}>
+      <h1>ALPHA OS ONLINE</h1>
+      <p>Dashboard funcionando.</p>
+    </div>
+  );
+}'use client'
 
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
