@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
+import Link from 'next/link'
 
 export default function Clientes() {
   const [clientes, setClientes] = useState([])
@@ -28,15 +29,17 @@ export default function Clientes() {
         <div className="space-y-3">
 
           {clientes.map((c) => (
-            <div
+            <Link
               key={c.id}
-              className="bg-zinc-900 border border-zinc-800 p-4 rounded"
+              href={`/clientes/${c.id}`}
             >
+              <div className="bg-zinc-900 border border-zinc-800 p-4 rounded hover:bg-zinc-800 cursor-pointer">
 
-              <p className="font-semibold">{c.name}</p>
-              <p className="text-sm text-zinc-400">{c.phone}</p>
+                <p className="font-semibold">{c.name}</p>
+                <p className="text-sm text-zinc-400">{c.phone}</p>
 
-            </div>
+              </div>
+            </Link>
           ))}
 
         </div>
