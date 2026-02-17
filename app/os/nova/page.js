@@ -14,6 +14,7 @@ export default function NovaOS() {
   const [deviceId, setDeviceId] = useState('')
   const [defeito, setDefeito] = useState('')
   const [valor, setValor] = useState('')
+  const [tecnico, setTecnico] = useState('')
 
   async function carregar() {
     const { data: c } = await supabase.from('clients').select('*')
@@ -24,13 +25,21 @@ export default function NovaOS() {
   }
 
   async function salvar() {
-    await supabase.from('service_orders').insert([{
+    const { error } = await supabase.from('service_orders').insert([{
       client_id: clientId,
       device_id: deviceId,
       defect: defeito,
-      price: valor,
-      status: 'Recebido'
+      price: Number(valor),
+      technician: tecnico,
+      status: 'Recebido',
+      entry_date: new Date().toISOString()
     }])
+
+    if (error) {
+      alert('Erro ao salvar OS')
+      console.error(error)
+      return
+    }
 
     router.push('/os')
   }
@@ -40,12 +49,12 @@ export default function NovaOS() {
   }, [])
 
   return (
-    <div className="p-8 max-w-md">
+    <div className="p-8 max-w-md space-y-3">
 
-      <h1 className="text-2xl mb-6">Nova Ordem</h1>
+      <h1 className="text-2xl mb-4">Nova Ordem</h1>
 
       <select
-        className="w-full mb-3 p-3 bg-zinc-900 border border-zinc-800 rounded"
+        className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
         value={clientId}
         onChange={e => setClientId(e.target.value)}
       >
@@ -56,7 +65,7 @@ export default function NovaOS() {
       </select>
 
       <select
-        className="w-full mb-3 p-3 bg-zinc-900 border border-zinc-800 rounded"
+        className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
         value={deviceId}
         onChange={e => setDeviceId(e.target.value)}
       >
@@ -72,14 +81,21 @@ export default function NovaOS() {
         placeholder="Defeito"
         value={defeito}
         onChange={e => setDefeito(e.target.value)}
-        className="w-full mb-3 p-3 bg-zinc-900 border border-zinc-800 rounded"
+        className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
       />
 
       <input
         placeholder="Valor"
         value={valor}
         onChange={e => setValor(e.target.value)}
-        className="w-full mb-6 p-3 bg-zinc-900 border border-zinc-800 rounded"
+        className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
+      />
+
+      <input
+        placeholder="Técnico responsável"
+        value={tecnico}
+        onChange={e => setTecnico(e.target.value)}
+        className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
       />
 
       <button
