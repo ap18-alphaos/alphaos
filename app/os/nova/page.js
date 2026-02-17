@@ -12,9 +12,9 @@ export default function NovaOS() {
 
   const [clientId, setClientId] = useState('')
   const [deviceId, setDeviceId] = useState('')
-  const [defeito, setDefeito] = useState('')
+  const [problema, setProblema] = useState('')
   const [valor, setValor] = useState('')
-  const [tecnico, setTecnico] = useState('')
+  const [servicoDono, setServicoDono] = useState('')
 
   async function carregar() {
     const { data: c } = await supabase.from('clients').select('*')
@@ -26,18 +26,19 @@ export default function NovaOS() {
 
   async function salvar() {
     const { error } = await supabase.from('service_orders').insert([{
-      client_id: clientId,
       device_id: deviceId,
-      defect: defeito,
-      price: Number(valor),
-      technician: tecnico,
+      reported_issue: problema,
+      diagnosis: problema,
+      servico_dono: servicoDono,
       status: 'Recebido',
-      entry_date: new Date().toISOString()
+      price: Number(valor),
+      payment_method: 'pix',
+      warranty_days: 90
     }])
 
     if (error) {
-      alert('Erro ao salvar OS')
       console.error(error)
+      alert('Erro ao salvar OS')
       return
     }
 
@@ -55,17 +56,6 @@ export default function NovaOS() {
 
       <select
         className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
-        value={clientId}
-        onChange={e => setClientId(e.target.value)}
-      >
-        <option value="">Cliente</option>
-        {clientes.map(c => (
-          <option key={c.id} value={c.id}>{c.name}</option>
-        ))}
-      </select>
-
-      <select
-        className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
         value={deviceId}
         onChange={e => setDeviceId(e.target.value)}
       >
@@ -78,9 +68,9 @@ export default function NovaOS() {
       </select>
 
       <input
-        placeholder="Defeito"
-        value={defeito}
-        onChange={e => setDefeito(e.target.value)}
+        placeholder="Problema relatado"
+        value={problema}
+        onChange={e => setProblema(e.target.value)}
         className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
       />
 
@@ -92,9 +82,9 @@ export default function NovaOS() {
       />
 
       <input
-        placeholder="Técnico responsável"
-        value={tecnico}
-        onChange={e => setTecnico(e.target.value)}
+        placeholder="Responsável pelo serviço"
+        value={servicoDono}
+        onChange={e => setServicoDono(e.target.value)}
         className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
       />
 
