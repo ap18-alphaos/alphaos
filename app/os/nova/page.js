@@ -7,38 +7,30 @@ import { supabase } from '../../../lib/supabase'
 export default function NovaOS() {
   const router = useRouter()
 
-  const [clientes, setClientes] = useState([])
   const [aparelhos, setAparelhos] = useState([])
 
-  const [clientId, setClientId] = useState('')
   const [deviceId, setDeviceId] = useState('')
-  const [problema, setProblema] = useState('')
+  const [defeito, setDefeito] = useState('')
   const [valor, setValor] = useState('')
-  const [servicoDono, setServicoDono] = useState('')
+  const [tecnico, setTecnico] = useState('')
 
   async function carregar() {
-    const { data: c } = await supabase.from('clients').select('*')
-    const { data: d } = await supabase.from('devices').select('*')
-
-    setClientes(c || [])
-    setAparelhos(d || [])
+    const { data } = await supabase.from('devices').select('*')
+    setAparelhos(data || [])
   }
 
   async function salvar() {
     const { error } = await supabase.from('service_orders').insert([{
       device_id: deviceId,
-      reported_issue: problema,
-      diagnosis: problema,
-      servico_dono: servicoDono,
-      status: 'Recebido',
+      reported_issue: defeito,
       price: Number(valor),
-      payment_method: 'pix',
-      warranty_days: 90
+      technician: tecnico,
+      status: 'Recebido'
     }])
 
     if (error) {
       console.error(error)
-      alert('Erro ao salvar OS')
+      alert(error.message)
       return
     }
 
@@ -68,9 +60,9 @@ export default function NovaOS() {
       </select>
 
       <input
-        placeholder="Problema relatado"
-        value={problema}
-        onChange={e => setProblema(e.target.value)}
+        placeholder="Defeito"
+        value={defeito}
+        onChange={e => setDefeito(e.target.value)}
         className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
       />
 
@@ -82,9 +74,9 @@ export default function NovaOS() {
       />
 
       <input
-        placeholder="Responsável pelo serviço"
-        value={servicoDono}
-        onChange={e => setServicoDono(e.target.value)}
+        placeholder="Técnico"
+        value={tecnico}
+        onChange={e => setTecnico(e.target.value)}
         className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
       />
 
