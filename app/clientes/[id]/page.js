@@ -1,9 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
 import { supabase } from '../../../lib/supabase'
 
-export default function Cliente({ params }) {
+export default function Cliente() {
+  const params = useParams()
+  const id = params.id
+
   const [cliente, setCliente] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -11,7 +15,7 @@ export default function Cliente({ params }) {
     const { data, error } = await supabase
       .from('clients')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .maybeSingle()
 
     if (error) {
@@ -23,10 +27,10 @@ export default function Cliente({ params }) {
   }
 
   useEffect(() => {
-    if (params?.id) {
+    if (id) {
       carregarCliente()
     }
-  }, [params])
+  }, [id])
 
   if (loading) {
     return <p className="text-white p-6">Carregando...</p>
