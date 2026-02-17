@@ -5,40 +5,25 @@ import { useParams } from 'next/navigation'
 import { supabase } from '../../../lib/supabase'
 
 export default function Cliente() {
-  const params = useParams()
-  const id = params.id
+  const { id } = useParams()
 
   const [cliente, setCliente] = useState(null)
-  const [loading, setLoading] = useState(true)
 
-  async function carregarCliente() {
-    const { data, error } = await supabase
+  async function carregar() {
+    const { data } = await supabase
       .from('clients')
       .select('*')
       .eq('id', id)
       .maybeSingle()
 
-    if (error) {
-      console.error(error)
-    }
-
     setCliente(data)
-    setLoading(false)
   }
 
   useEffect(() => {
-    if (id) {
-      carregarCliente()
-    }
+    if (id) carregar()
   }, [id])
 
-  if (loading) {
-    return <p className="text-white p-6">Carregando...</p>
-  }
-
-  if (!cliente) {
-    return <p className="text-red-400 p-6">Cliente não encontrado.</p>
-  }
+  if (!cliente) return <p className="text-white p-6">Carregando...</p>
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white p-6">
@@ -52,7 +37,17 @@ export default function Cliente() {
           <p><b>Endereço:</b> {cliente.address}</p>
         </div>
 
-        <a href="/clientes" className="text-blue-400 underline">
+        <button
+          onClick={async () => {
+            await supabase.from('clients').delete().eq('id', id)
+            window.location.href = '/clientes'
+          }}
+          className="w-full bg-red-600 hover:bg-red-700 p-3 rounded"
+        >
+          Excluir Cliente
+        </button>
+
+        <a href="/clientes" className="text-blue-400 underline block text-center">
           Voltar
         </a>
 
