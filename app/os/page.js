@@ -14,9 +14,13 @@ export default function OS() {
         id,
         status,
         price,
+        defect,
         devices (
           brand,
           model
+        ),
+        clients (
+          name
         )
       `)
       .order('entry_date', { ascending: false })
@@ -43,18 +47,26 @@ export default function OS() {
       <div className="space-y-3">
 
         {ordens.map(o => (
-          <div
+          <Link
             key={o.id}
-            className="bg-zinc-900 border border-zinc-800 p-4 rounded"
+            href={`/os/${o.id}`}
           >
-            <p className="font-semibold">
-              {o.devices?.brand} {o.devices?.model}
-            </p>
+            <div className="bg-zinc-900 border border-zinc-800 p-4 rounded hover:bg-zinc-800 cursor-pointer">
 
-            <p className="text-sm text-zinc-400">
-              Status: {o.status} — R$ {o.price}
-            </p>
-          </div>
+              <p className="font-semibold">
+                {o.devices?.brand} {o.devices?.model}
+              </p>
+
+              <p className="text-sm text-zinc-400">
+                Cliente: {o.clients?.name}
+              </p>
+
+              <p className="text-sm text-zinc-400">
+                Status: {o.status} — R$ {o.price}
+              </p>
+
+            </div>
+          </Link>
         ))}
 
       </div>
