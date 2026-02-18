@@ -8,13 +8,11 @@ export default function NovaOS() {
   const router = useRouter()
 
   const [aparelhos, setAparelhos] = useState([])
-
   const [deviceId, setDeviceId] = useState('')
-  const [reported, setReported] = useState('')
+  const [reportedIssue, setReportedIssue] = useState('')
   const [diagnosis, setDiagnosis] = useState('')
   const [serviceDone, setServiceDone] = useState('')
   const [price, setPrice] = useState('')
-  const [technician, setTechnician] = useState('')
 
   async function carregar() {
     const { data } = await supabase.from('devices').select('*')
@@ -24,17 +22,16 @@ export default function NovaOS() {
   async function salvar() {
     const { error } = await supabase.from('service_orders').insert([{
       device_id: deviceId,
-      reported_issue: reported,
-      diagnosis: diagnosis,
+      reported_issue: reportedIssue,
+      diagnosis,
       service_done: serviceDone,
-      price: Number(price),
-      technician: technician,
-      status: 'Recebido'
+      status: 'Recebido',
+      price: Number(price)
     }])
 
     if (error) {
       alert(error.message)
-      console.error(error)
+      console.log(error)
       return
     }
 
@@ -64,9 +61,9 @@ export default function NovaOS() {
       </select>
 
       <input
-        placeholder="Problema informado"
-        value={reported}
-        onChange={e => setReported(e.target.value)}
+        placeholder="Problema relatado"
+        value={reportedIssue}
+        onChange={e => setReportedIssue(e.target.value)}
         className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
       />
 
@@ -88,13 +85,6 @@ export default function NovaOS() {
         placeholder="Valor"
         value={price}
         onChange={e => setPrice(e.target.value)}
-        className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
-      />
-
-      <input
-        placeholder="Técnico"
-        value={technician}
-        onChange={e => setTechnician(e.target.value)}
         className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
       />
 
