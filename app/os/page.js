@@ -8,22 +8,16 @@ export default function OSPage() {
   const [os, setOs] = useState([])
 
   async function carregar() {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('service_orders')
       .select(`
         id,
         status,
         price,
-        defect,
-        devices (brand, model),
-        clients (name)
+        devices(brand,model),
+        clients(name)
       `)
-      .order('created_at', { ascending: false })
-
-    if (error) {
-      console.error(error)
-      return
-    }
+      .order('entry_date', { ascending: false })
 
     setOs(data || [])
   }
@@ -33,9 +27,9 @@ export default function OSPage() {
   }, [])
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="p-8 max-w-3xl mx-auto text-white">
 
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between mb-6">
         <h1 className="text-2xl">Ordens de Serviço</h1>
 
         <Link
@@ -49,30 +43,26 @@ export default function OSPage() {
       <div className="space-y-3">
 
         {os.map(o => (
-          <div
+          <Link
             key={o.id}
-            className="bg-zinc-900 border border-zinc-800 p-4 rounded"
+            href={`/os/${o.id}`}
+            className="block bg-zinc-900 border border-zinc-800 p-4 rounded hover:bg-zinc-800"
           >
             <p className="font-semibold">
-              {o.clients?.name} — {o.devices?.brand} {o.devices?.model}
+              {o.devices?.brand} {o.devices?.model}
             </p>
 
             <p className="text-sm text-zinc-400">
-              Defeito: {o.defect}
+              Cliente: {o.clients?.name}
             </p>
 
             <p className="text-sm text-zinc-400">
-              Status: {o.status}
+              Status: {o.status} — R$ {o.price}
             </p>
-
-            <p className="text-sm text-zinc-400">
-              Valor: R$ {o.price}
-            </p>
-          </div>
+          </Link>
         ))}
 
       </div>
-
     </div>
   )
 }
