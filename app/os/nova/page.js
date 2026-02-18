@@ -10,10 +10,11 @@ export default function NovaOS() {
   const [aparelhos, setAparelhos] = useState([])
 
   const [deviceId, setDeviceId] = useState('')
-  const [defeito, setDefeito] = useState('')
-  const [diagnostico, setDiagnostico] = useState('')
-  const [servico, setServico] = useState('')
-  const [valor, setValor] = useState('')
+  const [reported, setReported] = useState('')
+  const [diagnosis, setDiagnosis] = useState('')
+  const [serviceDone, setServiceDone] = useState('')
+  const [price, setPrice] = useState('')
+  const [technician, setTechnician] = useState('')
 
   async function carregar() {
     const { data } = await supabase.from('devices').select('*')
@@ -23,10 +24,11 @@ export default function NovaOS() {
   async function salvar() {
     const { error } = await supabase.from('service_orders').insert([{
       device_id: deviceId,
-      reported_issue: defeito,
-      diagnosis: diagnostico,
-      service_done: servico,
-      price: Number(valor),
+      reported_issue: reported,
+      diagnosis: diagnosis,
+      service_done: serviceDone,
+      price: Number(price),
+      technician: technician,
       status: 'Recebido'
     }])
 
@@ -53,7 +55,7 @@ export default function NovaOS() {
         value={deviceId}
         onChange={e => setDeviceId(e.target.value)}
       >
-        <option value="">Selecione o aparelho</option>
+        <option value="">Aparelho</option>
         {aparelhos.map(d => (
           <option key={d.id} value={d.id}>
             {d.brand} {d.model}
@@ -62,30 +64,37 @@ export default function NovaOS() {
       </select>
 
       <input
-        placeholder="Defeito relatado"
-        value={defeito}
-        onChange={e => setDefeito(e.target.value)}
+        placeholder="Problema informado"
+        value={reported}
+        onChange={e => setReported(e.target.value)}
         className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
       />
 
       <input
         placeholder="Diagnóstico"
-        value={diagnostico}
-        onChange={e => setDiagnostico(e.target.value)}
+        value={diagnosis}
+        onChange={e => setDiagnosis(e.target.value)}
         className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
       />
 
       <input
         placeholder="Serviço realizado"
-        value={servico}
-        onChange={e => setServico(e.target.value)}
+        value={serviceDone}
+        onChange={e => setServiceDone(e.target.value)}
         className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
       />
 
       <input
         placeholder="Valor"
-        value={valor}
-        onChange={e => setValor(e.target.value)}
+        value={price}
+        onChange={e => setPrice(e.target.value)}
+        className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
+      />
+
+      <input
+        placeholder="Técnico"
+        value={technician}
+        onChange={e => setTechnician(e.target.value)}
         className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
       />
 
