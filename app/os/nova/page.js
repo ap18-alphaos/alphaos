@@ -10,7 +10,7 @@ export default function NovaOS() {
   const [aparelhos, setAparelhos] = useState([])
 
   const [deviceId, setDeviceId] = useState('')
-  const [problema, setProblema] = useState('')
+  const [defeito, setDefeito] = useState('')
   const [diagnostico, setDiagnostico] = useState('')
   const [servico, setServico] = useState('')
   const [valor, setValor] = useState('')
@@ -23,18 +23,16 @@ export default function NovaOS() {
   async function salvar() {
     const { error } = await supabase.from('service_orders').insert([{
       device_id: deviceId,
-      reported_issue: problema,
+      reported_issue: defeito,
       diagnosis: diagnostico,
       service_done: servico,
       price: Number(valor),
-      status: 'Recebido',
-      payment_method: 'pix',
-      warranty_days: 90
+      status: 'Recebido'
     }])
 
     if (error) {
       alert(error.message)
-      console.log(error)
+      console.error(error)
       return
     }
 
@@ -55,8 +53,7 @@ export default function NovaOS() {
         value={deviceId}
         onChange={e => setDeviceId(e.target.value)}
       >
-        <option value="">Selecione aparelho</option>
-
+        <option value="">Selecione o aparelho</option>
         {aparelhos.map(d => (
           <option key={d.id} value={d.id}>
             {d.brand} {d.model}
@@ -65,9 +62,9 @@ export default function NovaOS() {
       </select>
 
       <input
-        placeholder="Problema informado"
-        value={problema}
-        onChange={e => setProblema(e.target.value)}
+        placeholder="Defeito relatado"
+        value={defeito}
+        onChange={e => setDefeito(e.target.value)}
         className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
       />
 
