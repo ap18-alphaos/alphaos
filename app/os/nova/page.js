@@ -10,9 +10,10 @@ export default function NovaOS() {
   const [aparelhos, setAparelhos] = useState([])
 
   const [deviceId, setDeviceId] = useState('')
-  const [defeito, setDefeito] = useState('')
+  const [problema, setProblema] = useState('')
+  const [diagnostico, setDiagnostico] = useState('')
+  const [servico, setServico] = useState('')
   const [valor, setValor] = useState('')
-  const [tecnico, setTecnico] = useState('')
 
   async function carregar() {
     const { data } = await supabase.from('devices').select('*')
@@ -22,11 +23,13 @@ export default function NovaOS() {
   async function salvar() {
     const { error } = await supabase.from('service_orders').insert([{
       device_id: deviceId,
-      reported_issue: defeito,
+      reported_issue: problema,
+      diagnosis: diagnostico,
+      service_done: servico,
       price: Number(valor),
-      technician: tecnico,
       status: 'Recebido',
-      entry_date: new Date().toISOString()
+      payment_method: 'pix',
+      warranty_days: 90
     }])
 
     if (error) {
@@ -52,7 +55,8 @@ export default function NovaOS() {
         value={deviceId}
         onChange={e => setDeviceId(e.target.value)}
       >
-        <option value="">Aparelho</option>
+        <option value="">Selecione aparelho</option>
+
         {aparelhos.map(d => (
           <option key={d.id} value={d.id}>
             {d.brand} {d.model}
@@ -61,9 +65,23 @@ export default function NovaOS() {
       </select>
 
       <input
-        placeholder="Defeito"
-        value={defeito}
-        onChange={e => setDefeito(e.target.value)}
+        placeholder="Problema informado"
+        value={problema}
+        onChange={e => setProblema(e.target.value)}
+        className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
+      />
+
+      <input
+        placeholder="Diagnóstico"
+        value={diagnostico}
+        onChange={e => setDiagnostico(e.target.value)}
+        className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
+      />
+
+      <input
+        placeholder="Serviço realizado"
+        value={servico}
+        onChange={e => setServico(e.target.value)}
         className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
       />
 
@@ -71,13 +89,6 @@ export default function NovaOS() {
         placeholder="Valor"
         value={valor}
         onChange={e => setValor(e.target.value)}
-        className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
-      />
-
-      <input
-        placeholder="Técnico responsável"
-        value={tecnico}
-        onChange={e => setTecnico(e.target.value)}
         className="w-full p-3 bg-zinc-900 border border-zinc-800 rounded"
       />
 
